@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <title>Aplicación de recambios AUTOBUR</title>
+        {% block stylesheets %}
+            <link href="{{ asset('bundles/app/css/normalizar.css') }}"
+                  rel="stylesheet" type="text/css" />
+            <link href="{{ asset('bundles/app/css/bootstrap.min.css') }}"
+                  rel="stylesheet" type="text/css" />
+            <link href="{{ asset('bundles/app/css/comun.css') }}"
+                  rel="stylesheet" type="text/css" />
+            <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
+        {% endblock %}
+    </head>
+    <body>
+
+        {% block body %}{% endblock %}
+        {% block javascripts %}{% endblock %}
+    </body>
+</html>

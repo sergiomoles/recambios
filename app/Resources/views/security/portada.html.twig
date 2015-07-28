@@ -1,0 +1,26 @@
+{% extends 'base.html.twig' %}
+
+
+{% block body %}
+    <h1>Bienvenido a recambios, {{ usuario.username }}</h1>
+    <header>
+        <nav>
+            <a href="#" class="btn btn-primary">Búsqueda</a>
+            <a href="#" class="btn btn-primary">Historial</a>
+            <a href="#" class="btn btn-primary">Vehiculo</a>
+        </nav>
+    </header>
+
+    <aside>
+        <section id="nosotros">
+            <h2>Sobre nosotros</h2>
+            <p>Lorem ipsum dolor sit amet...</p>
+        </section>
+    </aside>
+    <footer>
+        <a href="#">Ayuda</a>
+        <a href="#">Contacto</a>
+        <a href="#">Privacidad</a>
+        <a href="#">Sobre nosotros</a>
+    </footer>
+{% endblock %}

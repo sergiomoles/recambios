@@ -1,0 +1,33 @@
+# To get started with security, check out the documentation:
+# http://symfony.com/doc/current/book/security.html
+security:
+
+    encoders:
+        AppBundle\Entity\User:
+            algorithm: bcrypt
+            cost: 4
+
+
+    # http://symfony.com/doc/current/book/security.html#where-do-users-come-from-user-providers
+    providers:
+        our_db_provider:
+                    entity:
+                        class: AppBundle:User
+                        property: username
+                        # if you're using multiple entity managers
+                        # manager_name: customer
+
+    firewalls:
+        default:
+            anonymous: ~
+            http_basic: ~
+            form_login:
+                  login_path: /
+                  check_path: /recambios_check
+                  default_target_path: /recambios_check
+                  always_use_default_target_path: true
+                  use_referer:        true
+
+    access_control:
+            # require ROLE_ADMIN for /recambios/*
+            - { path: ^/recambios_check/, roles: ROLE_ADMIN }
