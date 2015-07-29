@@ -1,22 +1,35 @@
 {% extends 'base.html.twig' %}
 
+{% block stylesheets %}
+    {{ parent() }}
+        <link href="{{ asset('bundles/app/css/login.css') }}"
+              rel="stylesheet" type="text/css" />
+{% endblock %}
 
 {% block body %}
-    <h1>Autenticación recambios AUTOBUR</h1>
-    <form class="form-inline" action="{{ path('recambios_check') }}" method="post">
-        <div class="form-group">
+    <div class="row">
+        <br>
+        <div class="col-md-4"></div>
+        <div class="col-md-4" id="contenido-login">
+            <center><h1>Autenticación de usuario</h1></center>
+            <form class="form-horizontal" action="{{ path('recambios_check') }}" method="post">
+                <div class="form-group">
 
-            <label for="username">Usuario:</label>
-            <input type="text" class="form-control" id="username exampleInputName2" name="_username" value="{{ last_username }}"
-                    placeholder="Usuario..."/>
+                    <label for="username">Usuario:</label>
+                    <input type="text" class="form-control" id="username exampleInputName2" name="_username" value="{{ last_username }}"
+                           placeholder="Usuario..."/>
 
-            <label for="password">Contraseña:</label>
-            <input type="password" class="form-control" id="password" name="_password" placeholder="PwHnJmQ..." />
+                    <label for="password">Contraseña:</label>
+                    <input type="password" class="form-control" id="password" name="_password" placeholder="PwHnJmQ..." />
 
-            <input type="hidden" name="_target_path" value="account" />
-
-            <input type="submit" name="login" class="btn btn-default"/>
+                    <input type="hidden" name="_target_path" value="account" />
+                    <br>
+                    <input type="submit" name="login" class="btn btn-default" value="Acceder"/>
+                </div>
+            </form>
         </div>
-    </form>
+        <div class="col-md-4"></div>
+    </div>
+
 {% endblock %}
 

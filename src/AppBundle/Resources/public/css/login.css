@@ -1,0 +1,15 @@
+body{
+    background-color: #E9EAED;
+    height: 100vh;
+}
+
+#contenido-login{
+    padding: 2.0em;
+    background-color: #FDFCFB;
+    border: 1px solid #66AFE9;
+    -webkit-border-radius: 15px 15px 15px 15px;
+    border-radius: 15px 15px 15px 15px;
+    -webkit-box-shadow: 6px 6px 9px 0px rgba(50, 50, 50, 0.31);
+    -moz-box-shadow:    6px 6px 9px 0px rgba(50, 50, 50, 0.31);
+    box-shadow:         6px 6px 9px 0px rgba(50, 50, 50, 0.31);
+}

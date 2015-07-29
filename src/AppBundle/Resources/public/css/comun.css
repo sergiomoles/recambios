@@ -1,11 +1,12 @@
 body{
-    text-align: center;
-}
-
-form{
-    text-align: center;
 }
 
 #container{
     padding-top: 2.0em;
+}
+
+#dev{
+    position:absolute;
+    bottom:5px;
+    right:10px;
 }

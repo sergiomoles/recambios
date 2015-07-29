@@ -1,26 +1,40 @@
 {% extends 'base.html.twig' %}
 
+{% block stylesheets %}
+    {{ parent() }}
+    <link href="{{ asset('bundles/app/css/portada.css') }}"
+          rel="stylesheet" type="text/css" />
+{% endblock %}
 
 {% block body %}
-    <h1>Bienvenido a recambios, {{ usuario.username }}</h1>
-    <header>
-        <nav>
-            <a href="#" class="btn btn-primary">Búsqueda</a>
-            <a href="#" class="btn btn-primary">Historial</a>
-            <a href="#" class="btn btn-primary">Vehiculo</a>
-        </nav>
-    </header>
+    <div class="row">
+        <br>
+        <div class="col-md-1"></div>
+        <div class="col-md-1"></div>
+        <div class="col-md-1"></div>
+        <div class="col-md-6" id="contenido-app">
+            <header>
+                <center>
+                <nav>
+                    <a href="#" class="btn btn-primary btn-lg">Búsqueda</a>
+                    <a href="#" class="btn btn-primary btn-lg">Historial</a>
+                    <a href="#" class="btn btn-primary btn-lg">Vehiculo</a>
+                </nav>
+                </center>
+            </header>
+            <p class="text-right"><small>Bienvenido a recambios, {{ usuario.username }}</small></p>
+            <div class="row">
+                <aside>
+                    <section>
+                        <h4 class="text-center">Aplicación para la gestión de recambios del taller AUTOBUR</h4>
+                    </section>
+                </aside>
+            </div>
+        </div>
+        <div class="col-md-1"></div>
+        <div class="col-md-1"></div>
+        <div class="col-md-1"></div>
 
-    <aside>
-        <section id="nosotros">
-            <h2>Sobre nosotros</h2>
-            <p>Lorem ipsum dolor sit amet...</p>
-        </section>
-    </aside>
-    <footer>
-        <a href="#">Ayuda</a>
-        <a href="#">Contacto</a>
-        <a href="#">Privacidad</a>
-        <a href="#">Sobre nosotros</a>
-    </footer>
+    </div>
+    <br>
 {% endblock %}
