@@ -27,7 +27,13 @@ security:
                   default_target_path: /recambios_check
                   always_use_default_target_path: true
                   use_referer:        true
+            logout:
+                            path:   /logout
+                            target: /
+                            invalidate_session: false
+
 
     access_control:
             # require ROLE_ADMIN for /recambios/*
             - { path: ^/recambios_check/, roles: ROLE_ADMIN }
+            - { path: ^/buscador/, roles: ROLE_ADMIN }

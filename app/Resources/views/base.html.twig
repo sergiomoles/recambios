@@ -2,7 +2,7 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-        <title>Aplicación de recambios AUTOBUR</title>
+        <title>Aplicació de recanvis AUTOBUR</title>
         {% block stylesheets %}
             {% stylesheets 'estilos-base' %}
                 <link href="{{ asset('bundles/app/css/normalizar.css') }}"
@@ -14,11 +14,38 @@
                 <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
             {% endstylesheets %}
         {% endblock %}
+        {% block javascripts %}
+            {% javascripts 'js.base' %}
+                <script type="text/javascript" src="{{ asset('bundles/app/js/jquery-1.11.3.min.js') }}"></script>
+                <script type="text/javascript" src="{{ asset('bundles/app/js/bootstrap.min.js') }}"></script>
+                <script type="text/javascript" src="{{ asset('bundles/app/js/jquery-ui.js') }}"></script>
+            {% endjavascripts %}
+        {% endblock %}
     </head>
     <body>
-
+        {% if app.request.attributes.get('_route') != 'recambios_route' %}
+            <div class="row">
+                <div id="banner" class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                    <header>
+                        <div class="col-xs-10 col-sm-10 col-md-10 col-lg-10">
+                            <center>
+                                <nav id="navegacion" class="btn-group">
+                                    <a href="{{ path('buscador') }}" class="btn btn-primary btn-lg" >Buscador</a>
+                                    <a href="{{ path('historial') }}" class="btn btn-primary btn-lg" >Historial</a>
+                                    <a href="{{ path('vehicle') }}" class="btn btn-primary btn-lg" >Vehicle</a>
+                                    <a href="{{ path('stock') }}" class="btn btn-primary btn-lg" >Gestio d'estoc</a>
+                                </nav>
+                            </center>
+                        </div>
+                        <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
+                            <p class="text-right"><small>Benvingut a recanvis, {{ usuario.username }}</small></p>
+                            <p class="text-right"><a href="{{ path('user_logout') }}">Tancar sessió</a></p>
+                        </div>
+                    </header>
+                </div>
+            </div>
+        {% endif %}
         {% block body %}{% endblock %}
-        {% block javascripts %}{% endblock %}
     </body>
     <footer>
         <p id="dev">Desenvolupat per Enbinari Coop.</p>

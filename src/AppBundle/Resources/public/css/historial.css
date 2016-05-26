@@ -1,0 +1,15 @@
+.historialCaixa{
+     margin: 20px;
+     padding: 10px;
+     border: 1px solid #66AFE9;
+     -webkit-border-radius: 15px 15px 15px 15px;
+     border-radius: 15px 15px 15px 15px;
+ }
+
+.historial-form{
+    margin: 20px;
+    padding: 10px;
+    border: 1px solid #66AFE9;
+    -webkit-border-radius: 15px 15px 15px 15px;
+    border-radius: 15px 15px 15px 15px;
+}

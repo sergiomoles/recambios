@@ -1,0 +1,151 @@
+{% extends 'base.html.twig' %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link href="{{ asset('bundles/app/css/proveedor.css') }}"
+          rel="stylesheet" type="text/css" />
+{% endblock %}
+
+{% block body %}
+<div class="row contenido-app">
+    <br>
+        <div class="row">
+            <div class="row">
+                <div class="col-xs-6 col-sm-4 col-md-4 col-lg-4"></div>
+                <div id="resultado" class="col-xs-6 col-sm-4 col-md-4 col-lg-4 resultado"></div>
+                <div class="col-xs-6 col-sm-4 col-md-4 col-lg-4"></div>
+            </div>
+            <br>
+            <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2"></div>
+            <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4 marca">
+                <center><h4>Insertar Marca</h4></center>
+                <div class="row"><br></div>
+                <form id="insertaMarca">
+                    <div class="form-group">
+                        <label for="nombre">Nom</label>
+                        <input type="text" class="form-control" id="nombre" placeholder="...">
+                    </div>
+                    <button type="button" class="btn btn-success btn-lg" id="marca" onclick="inserta(this.id)">Guardar canvis</button>
+                </form>
+            </div>
+            <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4 proveidor">
+                <center><h4>Insertar Proveidor</h4></center>
+                <div class="row"><br></div>
+                <form id="insertaProv">
+                    <div class="form-group">
+                        <label for="nombre">Nom</label>
+                        <input type="text" class="form-control" id="nombre">
+                    </div>
+                    <div class="form-group">
+                        <label for="numproveedor">Num. proveidor</label>
+                        <input type="text" class="form-control" id="numproveedor">
+                    </div>
+                    <div class="form-group">
+                        <label for="correo">Correo</label>
+                        <input type="text" class="form-control" id="correo">
+                    </div>
+                    <div class="form-group">
+                        <label for="telefono">Telefon</label>
+                        <input type="text" class="form-control" id="telefono">
+                    </div>
+                    <button type="button" class="btn btn-success btn-lg" id="proveedor" onclick="inserta(this.id)" >Guardar canvis</button>
+                </form>
+            </div>
+            <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2"></div>
+            <script type="text/javascript">
+                function inserta(tipo){
+                    var valores = [];
+
+                    var obj = {};
+
+                    var atributo;
+
+                    var texto = document.getElementById('resultado');
+
+                    if(tipo == 'marca'){
+                        var form = document.getElementById('insertaMarca').getElementsByTagName('input');
+
+                        for (var x = 0; x < 1; x++) {
+                            atributo = form[x].getAttribute('id');
+                            obj[atributo] = form[x].value;
+                            valores.push(obj);
+                            atributo = '';
+                            obj = {};
+                        }
+
+                        valores = JSON.stringify(valores);
+
+
+                    }
+                    if(tipo == 'proveedor'){
+                        var form = document.getElementById('insertaProv').getElementsByTagName('input');
+
+                        for (var x = 0; x < 4; x++) {
+                            atributo = form[x].getAttribute('id');
+                            obj[atributo] = form[x].value;
+                            valores.push(obj);
+                            atributo = '';
+                            obj = {};
+                        }
+
+                        valores = JSON.stringify(valores);
+                    }
+
+                    $.ajax({
+                        url: "{{ path('proveedor') }}",
+                        type: 'post',
+                        data: tipo + '/' + valores,
+                        dataType: "json",
+                        success: function (resp){
+                            console.log(resp);
+
+                            texto.innerHTML = "<div class='alert alert-success'>" +
+                            "<a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a>" +
+                            "<h2><center>" + resp + "</center></h2></div>";
+                        }
+                    });
+                }
+
+            </script>
+        </div>
+        <div class="row">
+            <div class="col-xs-1 col-sm-1 col-md-1 col-lg-1"></div>
+            <div class="col-xs-5 col-sm-5 col-md-5 col-lg-5 caixaLlista" style="overflow-y:scroll; overflow-x:scroll;">
+                <div class="row">
+                    <center>Llistat de marques</center>
+                    <div class="table-responsive" id="marques" style="overflow-y:scroll; overflow-x:scroll;">
+                        <table class='table table-hover table-responsive'>
+                            <center><tr><td><strong>Nombre</strong></td></tr></center>
+                            {% for m in marca %}
+                               <center><tr><td>{{ m.nombre }}</td></tr></center>
+                            {% endfor %}
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+            <div class="col-xs-5 col-sm-5 col-md-5 col-lg-5 caixaLlista" style="overflow-y:scroll; overflow-x:scroll;">
+                <div class="row">
+                    <center>Llistat de proveidors</center>
+                    <div class="table-responsive" id="proveidors" style="overflow-y:scroll; overflow-x:scroll;">
+                        <table class='table table-hover table-responsive'>
+                            <center><tr><td><strong>Nombre</strong></td><td><strong>Num. prov.</strong></td><td><strong>Correu</strong></td>
+                                    <td><strong>Telèfon</strong></td></tr></center>
+                            {% for p in proveidor %}
+                                <center>
+                                    <tr>
+                                        <td>{{ p.nombre }}</td>
+                                        <td>{{ p.numproveedor }}</td>
+                                        <td>{{ p.correo }}</td>
+                                        <td>{{ p.telefono }}</td>
+                                    </tr>
+                                </center>
+                            {% endfor %}
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xs-1 col-sm-1 col-md-1 col-lg-1"></div>
+        </div>
+</div>
+{% endblock %}

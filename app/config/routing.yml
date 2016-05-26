@@ -1,3 +1,5 @@
 app:
     resource: "@AppBundle/Controller/"
     type:     annotation
+user_logout:
+       pattern:   /logout

@@ -1,0 +1,223 @@
+{% extends 'base.html.twig' %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link href="{{ asset('bundles/app/css/stock.css') }}"
+          rel="stylesheet" type="text/css" />
+{% endblock %}
+
+{% block body %}
+    <div class="row contenido-app">
+        <br>
+            <div class="row">
+                <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4"></div>
+                <div id="resultado" class="col-md-4 resultado">
+
+                </div>
+                <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4"></div>
+            </div>
+            <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2 buscador">
+                <form id="form-busc">
+                    <div class="form-group">
+                        <label for="codi">Codi</label>
+                        <input type="text" class="form-control" id="reffabrica" placeholder="Codi" oninput="autocompletar()">
+                    </div>
+                    <div class="form-group">
+                        <label for="nom">Nom</label>
+                        <input type="text" class="form-control" id="nombre" placeholder="Nom" value="">
+                    </div>
+                    <div class="form-group">
+                        <label for="refprov">Ref Proveedor</label>
+                        <input type="text" class="form-control" id="refproveedor" placeholder="...">
+                    </div>
+                    <div class="form-group">
+                        <label for="desc">Descripció</label>
+                        <input type="text" class="form-control" id="descripcion" placeholder="...">
+                    </div>
+                    <div class="form-group">
+                        <label for="preuent">Preu entrada</label>
+                        <input type="float" class="form-control" id="precioentrada" placeholder="€">
+                    </div>
+                    <div class="form-group">
+                        <label for="preueix">Preu eixida</label>
+                        <input type="float" class="form-control" id="preciosalida" placeholder="€">
+                    </div>
+                    <div class="form-group">
+                        <label for="ubicacio">Ubicació</label>
+                        <input type="text" class="form-control" id="ubicacion" placeholder="...">
+                    </div>
+                    <div class="form-group">
+                        <label for="marca">Marca</label>
+                        <input type="text" class="form-control" id="marcaid" placeholder="...">
+                    </div>
+                    <div class="form-group">
+                        <label for="proveedor">Proveedor</label>
+                        <input type="text" class="form-control" id="proveedorid" placeholder="...">
+                    </div>
+                    <button type="button" class="btn btn-success btn-lg" onclick="guardacanvi()" >Guardar canvis</button>
+                </form>
+            </div>
+            <div id="div-botones" class="btn-group center-block">
+                <button type="button" id="pujar" class="boton-stock btn btn-success insertar" onclick="quantitats(this.id)">Afegir</button>
+
+                <button type="button" id="baixar" class="boton-stock btn btn-danger retirar" onclick="quantitats(this.id)">Retirar</button>
+            </div>
+            <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2 prov">
+               <center><a href="{{ path('proveedor') }}" class="btn btn-primary btn-lg" >Nou proveidor o marca</a></center>
+            </div>
+
+            <script type="text/javascript">
+                function autocompletar(){
+
+                    var codi = document.getElementById("reffabrica").value;
+
+
+                    $.ajax({
+                        url: "{{ path('stock') }}",
+                        type: 'post',
+                        data: codi,
+                        dataType: "json",
+                        success: function(resp)
+                        {
+                            console.log(resp);
+
+                            var nom = document.getElementById('nombre');
+                            var refprov = document.getElementById('refproveedor');
+                            var des = document.getElementById('descripcion');
+                            var preuent = document.getElementById('precioentrada');
+                            var preueix = document.getElementById('preciosalida');
+
+                            var ubi = document.getElementById('ubicacion');
+
+                            var marca = document.getElementById('marcaid');
+                            var prov = document.getElementById('proveedorid');
+
+                            if(resp != '') {
+
+                                nom.value = resp[0].nombre;
+                                refprov.value = resp[0].refproveedor;
+                                des.value = resp[0].descripcion;
+                                preuent.value = resp[0].precioentrada;
+                                preueix.value = resp[0].preciosalida;
+
+                                ubi.value = resp[0].ubicacion;
+
+                                marca.value = resp[0].marcaid.nombre;
+                                prov.value = resp[0].proveedorid.nombre;
+                            }
+                            if(resp == ''){
+                                nom.value = '';
+                                refprov.value = '';
+                                des.value = '';
+                                preuent.value = '';
+                                preueix.value = '';
+
+                                ubi.value = '';
+
+                                marca.value = '';
+                                prov.value = '';
+                            }
+
+                        }
+                    });
+
+                }
+
+                function guardacanvi(){
+
+                    if (confirm("Esta operació no es pot desfer, vols guardar els canvis?") == true) {
+
+                        var form = document.getElementsByTagName('input');
+
+                        var valores = [];
+
+                        var obj = {};
+
+                        var atributo;
+
+                        for (var x = 0; x<9 ; x++){
+                            atributo = form[x].getAttribute('id');
+                            obj[atributo] = form[x].value;
+                            valores.push(obj);
+                            atributo = '';
+                            obj = {};
+                        }
+
+                        var texto = document.getElementById('resultado');
+
+
+                        $.ajax({
+                            url: "{{ path('stock') }}",
+                            type: 'post',
+                            data: JSON.stringify(valores),
+                            dataType: "json",
+                            success: function (resp) {
+                                console.log(resp);
+
+                                if(resp == "Actualitzat correctament." || resp == "Nou producte afegit l'estoc.") {
+                                    texto.innerHTML = "<div class='alert alert-success'>" +
+                                    "<a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a>" +
+                                    "<h2><center>" + resp + "</center></h2></div>";
+                                }
+
+                                else{
+                                    if(resp != "Actualitzat correctament.") {
+                                        texto.innerHTML = "<div class='alert alert-danger'>" +
+                                        "<a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a>" +
+                                        "<h2><center>" + resp + "</center></h2></div>";
+
+                                    }
+                                }
+                            }
+                        });
+
+
+                    } else {
+                        var texto = document.getElementById('resultado');
+
+                        texto.innerHTML = "<div class='alert alert-danger'>" +
+                        "<a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a>" +
+                        "<h2><center> No s'ha realitzat la modificació.</center></h2></div>";
+                    }
+                }
+
+                function quantitats(tipo){
+                    var reffabrica = document.getElementById("reffabrica").value;
+
+                    var texto = document.getElementById('resultado');
+
+                    var arraydato = [];
+
+                    arraydato = [tipo, reffabrica];
+
+                    $.ajax({
+                        url: "{{ path('quantitats') }}",
+                        type: 'put',
+                        data: JSON.stringify(arraydato),
+                        dataType: "json",
+                        success: function (resp) {
+                            console.log(resp);
+
+                            if (resp == 'Error al incrementar la cantitat del producte.') {
+                                texto.innerHTML = "<div class='alert alert-danger'>" +
+                                "<a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a>" +
+                                "<h2><center>" +resp + "</center></h2></div>";
+
+                            }
+                            if (resp == "Aquest producte ja no està en estoc."){
+                                texto.innerHTML = "<div class='alert alert-danger'>" +
+                                "<a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a>" +
+                                "<h2><center>" + resp + "</center></h2></div>";
+                            }
+                            else {
+                                texto.innerHTML = "<div class='alert alert-success'>" +
+                                "<a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a>" +
+                                "<h2><center>" + resp + "</center></h2></div>";
+                            }
+                        }
+                    });
+                }
+            </script>
+    </div>
+{% endblock %}
+

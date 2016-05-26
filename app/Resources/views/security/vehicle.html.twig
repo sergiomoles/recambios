@@ -1,0 +1,306 @@
+{% extends 'base.html.twig' %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link href="{{ asset('bundles/app/css/vehicle.css') }}"
+          rel="stylesheet" type="text/css" />
+{% endblock %}
+
+{% block body %}
+    <div class="row contenido-app">
+            <div class="row">
+                <div class="col-xs-6 col-sm-4 col-md-4 col-lg-4"></div>
+                <div id="resultado" class="col-xs-6 col-sm-4 col-md-4 col-lg-4 resultado"></div>
+                <div class="col-xs-6 col-sm-4 col-md-4 col-lg-4"></div>
+            </div>
+            </br>
+            <div class="row">
+                <div class="col-xs-6 col-sm-4 col-md-4 col-lg-4 busca-vehicle">
+                    <form id="vehicle-form">
+                        <div class="form-group">
+                            <label for="matricula">Matricula</label>
+                            <input type="text" class="form-control" id="matricula" placeholder="1453JGN" oninput="completaVehicle()">
+                        </div>
+                        <div class="form-group">
+                            <label for="marca">Marca</label>
+                            <input type="text" class="form-control" id="marca" placeholder="...">
+                        </div>
+                        <div class="form-group">
+                            <label for="modelo">Model</label>
+                            <input type="text" class="form-control" id="modelo" placeholder="...">
+                        </div>
+                        <div class="form-group">
+                            <label for="bastidor">Bastidor</label>
+                            <input type="text" class="form-control" id="bastidor" placeholder="...">
+                        </div>
+                        <button type="button" class="btn btn-success btn-lg" onclick="guardacanvi()" >Guardar canvis</button>
+                    </form>
+                    <div class="row"><br></div>
+                    <label for="reffabrica">Referencia Producto</label>
+                    <input type="text" id="reffabrica" placeholder="ref. producto">
+                    <div class="row"><br></div>
+                    <div class="btn-group center-block">
+                        <button type="button" id="incloure" class="boto-producte btn btn-success" onclick="asigna(this.id)">Afegir</button>
+
+                        <button type="button" id="retirar" class="boto-producte btn btn-danger" onclick="asigna(this.id)">Retirar</button>
+                    </div>
+                </div>
+                <div class="col-xs-6 col-sm-4 col-md-4 col-lg-4 historial" >
+                    <div class="row">
+                        <center>Productes afegits al vehicle</center>
+                        <div class="table-responsive productes" id="productes" style="overflow-y:scroll; overflow-x:scroll; height:400px;">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <center>Historial de vehicle</center>
+                        <div class="table-responsive historialCaixa" id="historial" style="overflow-y:scroll; overflow-x:scroll; height:400px;">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xs-6 col-sm-4 col-md-4 col-lg-4 comentaris" style="overflow-y:scroll; overflow-x:scroll; height:588px;">
+                    <div class="row">
+                        <center>Comentaris del vehicle</center>
+                        <div class="table-responsive comentarisCaixa" id="comentaris" style="overflow-y:scroll; overflow-x:scroll; height:370px;">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <textarea class="form-control" id="nou-comentari"></textarea>
+                        <div class="row"><br></div>
+                        <button type="button" id="comentari" class="btn btn-primary" onclick="comentari()">Nou comentari</button>
+                    </div>
+                </div>
+                    <script type="text/javascript">
+                        function completaVehicle(){
+
+                            var matricula = document.getElementById("matricula").value;
+
+
+                            $.ajax({
+                                url: "{{ path('vehicle') }}",
+                                type: 'post',
+                                data: matricula,
+                                dataType: "json",
+                                success: function(resp)
+                                {
+                                    console.log(resp);
+
+                                    var marca = document.getElementById('marca');
+                                    var model = document.getElementById('modelo');
+                                    var bastidor = document.getElementById('bastidor');
+
+
+                                    if(resp != '') {
+
+                                        marca.value = resp['vehicle'][0].marca;
+                                        model.value = resp['vehicle'][0].modelo;
+                                        bastidor.value = resp['vehicle'][0].bastidor;
+
+                                        $('#historial table').remove();
+
+                                        $('#historial').append("<table class='table table-hover table-responsive'></table>");
+                                        var table = $('#historial').children();
+
+                                        for (var x = 0; x < resp['historial'].length; x++){
+                                            var fechaJS = resp['historial'][x].fecha['date'].split(" ");
+                                            var horaJS = resp['historial'][x].hora['date'].split(" ");
+                                            horaJS = horaJS[1].split(":");
+
+                                            if(resp['historial'][x]['movimientoid'].id == 1)
+                                            {
+                                                table.append("<tr><td><p>El dia " + fechaJS[0] + " a les " + horaJS[0] +
+                                                ":" + horaJS[1] + "</p>" +
+                                                " <p>es van " + resp['historial'][x]['movimientoid'].tipo +
+                                                " les dades del vehicle</p></td></tr>");
+                                            }
+
+                                            if(resp['historial'][x]['movimientoid'].id == 2 || resp['historial'][x]['movimientoid'].id == 3) {
+                                                if (resp['historial'][x]['movimientoid'].id == 2) {
+
+                                                    table.append("<tr style='color: green;'><td><p>El dia " + fechaJS[0] + " a les " + horaJS[0] +
+                                                    ":" + horaJS[1] + "</p>" +
+                                                    " es va " + resp['historial'][x]['movimientoid'].tipo +
+                                                    " al vehicle el producte: " + resp['historial'][x]['objetoId'].nombre + "</td></tr>");
+                                                }
+                                                if (resp['historial'][x]['movimientoid'].id == 3){
+                                                    table.append("<tr style='color: red;'><td><p>El dia " + fechaJS[0] + " a les " + horaJS[0] +
+                                                    ":" + horaJS[1] + "</p>" +
+                                                    " es va " + resp['historial'][x]['movimientoid'].tipo +
+                                                    " al vehicle el producte: " + resp['historial'][x]['objetoId'].nombre + "</td></tr>");
+                                                }
+                                            }
+                                            if(resp['historial'][x]['movimientoid'].id == 4){
+                                                table.append("<tr><td><p>El dia " + fechaJS[0] + " a les " + horaJS[0] +
+                                                ":" + horaJS[1] + "</p>" +
+                                                " <p>es va fer la " + resp['historial'][x]['movimientoid'].tipo +
+                                                " d'aquest vehicle</p></td></tr>");
+                                            }
+                                        }
+
+                                        $('#comentaris table').remove();
+
+                                        $('#comentaris').append("<table class='table table-hover table-responsive'></table>");
+                                        var table = $('#comentaris').children();
+
+                                        for(var y = 0; y < resp['comentaris'].length; y++){
+                                            var fechaCom = resp['comentaris'][y].fecha['date'].split(" ");
+                                            var horaCom = resp['comentaris'][y].hora['date'].split(" ");
+                                            horaCom = horaCom[1].split(":");
+
+                                            table.append("<tr><td>" +  resp['comentaris'][y]['comentario'] +
+                                            "</td><td>El dia " + fechaCom[0] + " a les " + horaCom[0] + ":" + horaCom[1] + "</td></tr>");
+                                        }
+
+                                        $('#productes table').remove();
+
+                                        $('#productes').append("<table class='table table-hover table-responsive'></table>");
+                                        var table = $('#productes').children();
+
+                                        for(var z = 0; z < resp['objecte'].length; z++){
+                                            var fechaEntrada = resp['objecte'][z].fechaEntrada['date'].split(" ");
+
+                                            table.append("<tr><td><p>" + resp['objecte'][z].objetoId['nombre'] +
+                                            " ,referència -> " + resp['objecte'][z].objetoId['reffabrica'] + ", el dia: " +
+                                            fechaEntrada[0] +"</p></td></tr>");
+                                        }
+                                    }
+                                        /* No funciona, en cas de que el vehicle no existeixca no mostra res */
+                                        if(resp == ''){
+                                            marca.value = ' ';
+                                            model.value = ' ';
+                                            bastidor.value = ' ';
+                                        }
+
+
+                                }
+                            });
+
+                        }
+
+                        function guardacanvi(){
+
+                            if (confirm("Esta operació no es pot desfer, vols guardar els canvis?") == true) {
+
+                                var form = document.getElementsByTagName('input');
+
+                                var valores = [];
+
+                                var obj = {};
+
+                                var atributo;
+
+                                for (var x = 0; x < 4; x++) {
+                                    atributo = form[x].getAttribute('id');
+                                    obj[atributo] = form[x].value;
+                                    valores.push(obj);
+                                    atributo = '';
+                                    obj = {};
+                                }
+
+                                var texto = document.getElementById('resultado');
+
+
+                                $.ajax({
+                                    url: "{{ path('vehicle') }}",
+                                    type: 'post',
+                                    data: JSON.stringify(valores),
+                                    dataType: "json",
+                                    success: function (resp) {
+                                        console.log(resp);
+
+                                        if(resp == "Actualitzat correctament." || resp == "Nou vehicle afegit.") {
+                                            texto.innerHTML = "<div class='alert alert-success'>" +
+                                            "<a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a>" +
+                                            "<h2><center>" + resp + "</center></h2></div>";
+                                        }
+
+                                        else {
+                                            if (resp != "Actualitzat correctament.") {
+                                                texto.innerHTML = "<div class='alert alert-danger'>" +
+                                                "<a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a>" +
+                                                "<h2><center>" + resp + "</center></h2></div>";
+
+                                            }
+                                        }
+                                        completaVehicle();
+                                    }
+                                });
+
+                            }
+                            else{
+                                var texto = document.getElementById('resultado');
+                                texto.innerHTML = "<div class='alert alert-danger'>" +
+                                "<a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a>" +
+                                "<h2><center>La modificació no s'ha realitzat.</center></h2></div>";
+                                completaVehicle();
+                            }
+                        }
+
+                        function asigna(tipo){
+
+                            var reffabrica = document.getElementById("reffabrica").value;
+
+                            var texto = document.getElementById('resultado');
+
+                            var vehicle = document.getElementById('matricula').value;
+
+                            var arraydato = [];
+
+                            arraydato = [tipo, reffabrica, vehicle];
+
+                            $.ajax({
+                                url: "{{ path('asigna') }}",
+                                type: 'put',
+                                data: JSON.stringify(arraydato),
+                                dataType: "json",
+                                success: function (resp) {
+                                    console.log(resp);
+
+                                    if (resp == "No es pot afegir el producte ja que esta fora d'estoc.") {
+                                        texto.innerHTML = "<div class='alert alert-danger'>" +
+                                        "<a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a>" +
+                                        "<h2><center>" +resp + "</center></h2></div>";
+
+                                    }
+                                    if(resp == "S'ha inclos el producte al vehicle.") {
+                                        texto.innerHTML = "<div class='alert alert-success'>" +
+                                        "<a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a>" +
+                                        "<h2><center>" + resp + "</center></h2></div>";
+                                    }
+                                    if(resp == "S'ha retirat el producte del vehicle.") {
+                                        texto.innerHTML = "<div class='alert alert-success'>" +
+                                        "<a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a>" +
+                                        "<h2><center>" + resp + "</center></h2></div>";
+                                    }
+                                    completaVehicle();
+                                }
+                            });
+                        }
+
+                        function comentari(){
+                            var texto = document.getElementById('resultado');
+
+                            var vehicle = document.getElementById('matricula').value;
+
+                            var comentari = document.getElementById('nou-comentari').value;
+
+                            $.ajax({
+                                url: "{{ path('asigna') }}",
+                                type: 'put',
+                                data: JSON.stringify("noucomentari:" + comentari + "," + vehicle),
+                                dataType: "json",
+                                success: function (resp) {
+                                    console.log(resp);
+
+                                    texto.innerHTML = "<div class='alert alert-success'>" +
+                                    "<a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a>" +
+                                    "<h2><center>" + resp + "</center></h2></div>";
+                                    completaVehicle();
+                                }
+                            });
+
+
+                        }
+                    </script>
+            </div>
+    </div>
+{% endblock %}

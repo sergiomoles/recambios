@@ -1,0 +1,61 @@
+#div-botones{
+    width: 70vh;
+}
+
+.buscador{
+    width: 50vh;
+    margin: 40px;
+    padding: 40px;
+    border: 1px solid #66AFE9;
+    -webkit-border-radius: 15px 15px 15px 15px;
+    border-radius: 15px 15px 15px 15px;
+}
+
+
+/* Desktop */
+@media (min-width: 1200px) {
+    .boton-stock{
+        font-size: 56px;
+        margin-right: 15px;
+        height: 30vh;
+        width: 30vh;
+    }
+}
+
+/* Laptop */
+@media (min-width: 992px) and (max-width: 1200px) {
+    .boton-stock{
+        font-size: 45px;
+        margin-right: 15px;
+        height: 27vh;
+        width: 27vh;
+    }
+}
+
+/* Tablet */
+@media (min-width: 768px) and (max-width: 992px) {
+    .boton-stock{
+        font-size: 25px;
+        margin-right: 15px;
+        height: 22vh;
+        width: 22vh;
+    }
+}
+
+/* Smartphone */
+@media (max-width: 768px) {
+    .boton-stock{
+        font-size: 25px;
+        margin-right: 15px;
+        height: 18vh;
+        width: 18vh;
+    }
+}
+
+.resultado{
+}
+
+.prov{
+    margin: 90px;
+    padding: 40px;
+}

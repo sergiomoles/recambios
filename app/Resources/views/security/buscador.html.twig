@@ -1,0 +1,195 @@
+{% extends 'base.html.twig' %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link href="{{ asset('bundles/app/css/buscador.css') }}"
+          rel="stylesheet" type="text/css" />
+{% endblock %}
+
+{% block body %}
+    <div class="row contenido-app">
+        <br>
+            <div class="row producte">
+                <div class="col-md-2 buscaProducte" id="buscaProducte">
+                    <form id="producte-form">
+                        <div class="form-group">
+                            <label for="reffabrica">Ref Fabrica</label>
+                            <input type="text" class="form-control" id="reffabrica" placeholder="...">
+                        </div>
+                        <div class="form-group">
+                            <label for="nombre">Nom</label>
+                            <input type="text" class="form-control" id="nombre" placeholder="...">
+                        </div>
+                        <div class="form-group">
+                            <label for="refproveedor">Ref Proveedor</label>
+                            <input type="text" class="form-control" id="refproveedor" placeholder="...">
+                        </div>
+                        <div class="form-group">
+                            <label for="ubicacion">Ubicació</label>
+                            <input type="text" class="form-control" id="ubicacion" placeholder="...">
+                        </div>
+                        <div class="form-group">
+                            <label for="cantidad">Cantitat</label>
+                            <input type="text" class="form-control" id="cantidad" placeholder="...">
+                        </div>
+                        <button type="button" class="btn btn-success btn-lg" id="bp" onclick="busca(this.id)">Buscar</button>
+                    </form>
+                </div>
+                <div class="col-md-8 producteCaixa" id="producteCaixa" style="overflow-y:scroll; overflow-x:scroll; height:490px;">
+                    <div class="row">
+                        <center>Buscador de productes</center>
+                        <div class="table-responsive" id="productes" style="overflow-y:scroll; overflow-x:scroll;">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-2"></div>
+            </div>
+            <div class="row vehicle">
+                <div class="col-md-2 buscaVehicle" id="buscaVehicle">
+                    <form id="vehicle-form">
+                        <div class="form-group">
+                            <label for="matricula">Matricula</label>
+                            <input type="text" class="form-control" id="matricula" placeholder="1453JGN">
+                        </div>
+                        <div class="form-group">
+                            <label for="marca">Marca</label>
+                            <input type="text" class="form-control" id="marca" placeholder="...">
+                        </div>
+                        <div class="form-group">
+                            <label for="modelo">Model</label>
+                            <input type="text" class="form-control" id="modelo" placeholder="...">
+                        </div>
+                        <div class="form-group">
+                            <label for="bastidor">Bastidor</label>
+                            <input type="text" class="form-control" id="bastidor" placeholder="...">
+                        </div>
+                        <button type="button" class="btn btn-success btn-lg" id="bv" onclick="busca(this.id)">Buscar</button>
+                    </form>
+                </div>
+                <div class="col-md-8 vehicleCaixa" style="overflow-y:scroll; overflow-x:scroll; height:490px;">
+                    <div class="row">
+                        <center>Buscador de vehicles</center>
+                        <div class="table-responsive" id="vehicles" style="overflow-y:scroll; overflow-x:scroll;">
+                        </div>
+                    </div>
+                    <div class="col-md-2"></div>
+                </div>
+                <script type="text/javascript">
+                    function busca(tipo){
+                        var valores = [];
+
+                        var obj = {};
+
+                        var atributo;
+
+                        if(tipo == "bv") {
+
+                            var form = document.getElementById('buscaVehicle').getElementsByTagName('input');
+
+                            for (var x = 0; x < 4; x++) {
+                                atributo = form[x].getAttribute('id');
+                                obj[atributo] = form[x].value;
+                                valores.push(obj);
+                                atributo = '';
+                                obj = {};
+                            }
+
+                            valores = JSON.stringify(valores);
+
+                        }
+                        if (tipo == 'bp'){
+                            var form = document.getElementById('buscaProducte').getElementsByTagName('input');
+
+                            for (var x = 0; x < 5; x++) {
+                                atributo = form[x].getAttribute('id');
+                                obj[atributo] = form[x].value;
+                                valores.push(obj);
+                                atributo = '';
+                                obj = {};
+                            }
+
+                            valores = JSON.stringify(valores);
+
+                        }
+                        $.ajax({
+                            url: "{{ path('replenaBuscador') }}",
+                            type: 'post',
+                            data: tipo + '/' + valores,
+                            dataType: "json",
+                            success: function (resp) {
+                                console.log(resp);
+                                if (resp != '') {
+                                    if (resp[0] == "bv") {
+
+                                        $('#vehicles table').remove();
+
+                                        $('#vehicles').append("<table class='table table-hover table-responsive'></table>");
+
+
+                                        var table = $('#vehicles').children();
+                                        table.append("<tr><td><strong>Matricula</strong></td><td><strong>Marca</strong></td><td><strong>Model</strong></td>" +
+                                        "<td><strong>Bastidor</strong></td></tr>");
+
+                                        for (var x = 1; x < resp.length; x++) {
+
+                                            table.append("<tr><td>" + resp[x].matricula + "</td>" +
+                                            "<td>" + resp[x].marca + "</td>" +
+                                            "<td>" + resp[x].modelo + "</td>" +
+                                            "<td>" + resp[x].bastidor + "</td></tr>");
+
+                                        }
+                                    }
+                                    if (resp[0] == 'bp') {
+                                        $('#productes table').remove();
+
+                                        $('#productes').append("<table class='table table-hover table-responsive'></table>");
+
+
+                                        var table = $('#productes').children();
+                                        table.append("<tr><td><strong>Nom</strong></td><td><strong>Ref Prov</strong></td>" +
+                                        "<td><strong>Ref Fab</strong></td><td><strong>Descripció</strong></td>" +
+                                        "<td><strong>Preu eixida</strong></td>" +
+                                        "<td><strong>Preu entrada</strong><td><strong>Alta</strong></td></td>" +
+                                        "<td><strong>Modificació</strong></td><td><strong>Ubicació</strong></td>" +
+                                        "<td><strong>Proveidor</strong></td><td><strong>Marca</strong></td>" +
+                                        "<td><strong>Cantitat</strong></td></tr>");
+
+                                        for (var x = 1; x < resp.length; x++) {
+
+                                            if (resp[x].fuerastock) {
+                                                var fechaAlta = resp[x].fechaalta['date'].split(" ");
+                                                var fechaMod = resp[x].fechamodificacion['date'].split(" ");
+                                                table.append("<tr style='color: red;'><td>" + resp[x].nombre + "</td>" +
+                                                "<td>" + resp[x].refproveedor + "</td>" +
+                                                "<td>" + resp[x].reffabrica + "</td><td>" + resp[x].descripcion + "</td>" +
+                                                "<td>" + resp[x].preciosalida + "</td><td>" + resp[x].precioentrada + "</td>" +
+                                                "<td>" + fechaAlta[0] + "</td><td>" + fechaMod[0] + "</td>" +
+                                                "<td>" + resp[x].ubicacion + "</td>" +
+                                                "<td>" + resp[x].proveedorid['nombre'] + "</td>" +
+                                                "<td>" + resp[x].marcaid['nombre'] + "</td>" +
+                                                "<td>" + resp[x].cantidad + "</td></tr>");
+                                            }
+                                            if (!resp[x].fuerastock) {
+                                                var fechaAlta = resp[x].fechaalta['date'].split(" ");
+                                                var fechaMod = resp[x].fechamodificacion['date'].split(" ");
+                                                table.append("<tr><td>" + resp[x].nombre + "</td>" +
+                                                "<td>" + resp[x].refproveedor + "</td>" +
+                                                "<td>" + resp[x].reffabrica + "</td><td>" + resp[x].descripcion + "</td>" +
+                                                "<td>" + resp[x].preciosalida + "</td><td>" + resp[x].precioentrada + "</td>" +
+                                                "<td>" + fechaAlta[0] + "</td><td>" + fechaMod[0] + "</td>" +
+                                                "<td>" + resp[x].ubicacion + "</td>" +
+                                                "<td>" + resp[x].proveedorid['nombre'] + "</td>" +
+                                                "<td>" + resp[x].marcaid['nombre'] + "</td>" +
+                                                "<td>" + resp[x].cantidad + "</td></tr>");
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        });
+                    }
+                </script>
+            </div>
+    </div>
+    <br>
+{% endblock %}

@@ -1,0 +1,125 @@
+{% extends 'base.html.twig' %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link href="{{ asset('bundles/app/css/historial.css') }}"
+          rel="stylesheet" type="text/css" />
+    <link href="{{ asset('bundles/app/css/jquery-ui.css') }}"
+          rel="stylesheet" type="text/css" />
+{% endblock %}
+
+{% block body %}
+    <div class="row contenido-app">
+        <br>
+            <div class="row">
+                <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
+                    <center>Buscador</center>
+                    <form class="historial-form">
+                        <div class="form-group">
+                            <label for="desde">Desde</label>
+                            <input type="text" class="form-control" id="desde">
+                        </div>
+                        <div class="form-group">
+                            <label for="fins">Fins</label>
+                            <input type="text" class="form-control" id="fins">
+                        </div>
+                        <div class="form-group">
+                            <label for="reffabrica">Codi</label>
+                            <input type="text" class="form-control" id="reffabrica" placeholder="...">
+                        </div>
+                        <button type="button" class="btn btn-success btn-lg" id="bp" onclick="busca()">Buscar</button>
+                    </form>
+                </div>
+                <div class="col-xs-8 col-sm-8 col-md-8 col-lg-8">
+                    <center>Historial de productes</center>
+                    <div class="table-responsive historialCaixa" id="historial" style="overflow-y:scroll; overflow-x:scroll; height:450px;">
+
+                    </div>
+                </div>
+                <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2"></div>
+                <script type="text/javascript">
+
+                    $(function() {
+                        $(function($){
+                            $.datepicker.regional['ca'] = {
+                                closeText: 'Tancar',
+                                prevText: '<Ant',
+                                nextText: 'Seg>',
+                                currentText: 'Avui',
+                                monthNames: ['Gener', 'Febrer', 'Març', 'Abril', 'Maig', 'Juny', 'Juliol', 'Agost', 'Setembre', 'Octubre', 'Novembre', 'Desembre'],
+                                monthNamesShort: ['Gen','Febr','Març','Abr', 'Maig','Juny','Jul','Ag','Set', 'Oct','Nov','Des'],
+                                dayNames: ['Dumenge', 'Dilluns', 'Dimarts', 'Dimecres', 'Dijous', 'Divendres', 'Dissabte'],
+                                dayNamesShort: ['Dum','Dil','Dim','Dime','Dij','Div','Dis'],
+                                dayNamesMin: ['Dg','Dl','Dt','Dc','Dj','Dv','Ds'],
+                                weekHeader: 'Sm',
+                                dateFormat: 'dd/mm/yy',
+                                firstDay: 1,
+                                isRTL: false,
+                                showMonthAfterYear: false,
+                                yearSuffix: ''
+                            };
+                            $.datepicker.setDefaults($.datepicker.regional['ca']);
+                        });
+
+                        $( "#desde" ).datepicker({dateFormat: "dd-mm-yy"});
+                        $( "#fins").datepicker({dateFormat: "dd-mm-yy"});
+                    });
+
+                    function busca(){
+
+                    }
+
+                    $( document ).ready(function() {
+
+                        var aux = 'si';
+                        $.ajax({
+                            url: "{{ path('historial') }}",
+                            type: 'post',
+                            data: aux,
+                            dataType: "json",
+                            success: function (resp) {
+                                $('#historial table').remove();
+
+                                $('#historial').append("<table class='table table-hover table-responsive'></table>");
+                                var table = $('#historial').children();
+
+                                for (var x = 0; x < resp.length; x++) {
+                                    var fechaJS = resp[x].fecha['date'].split(" ");
+                                    var horaJS = resp[x].hora['date'].split(" ");
+                                    horaJS = horaJS[1].split(":");
+
+                                    if (resp[x]['movimientoid'].id == 1) {
+                                        table.append("<tr><td><p>El dia " + fechaJS[0] + " a les " + horaJS[0] +
+                                        ":" + horaJS[1] +
+                                        " es van " + resp[x]['movimientoid'].tipo +
+                                        " les dades del producte: " + resp[x].nombre + "</p></td></tr>");
+                                    }
+                                    if(resp[x]['movimientoid'].id == 4){
+                                        table.append("<tr><td><p>El dia " + fechaJS[0] + " a les " + horaJS[0] +
+                                        ":" + horaJS[1] +
+                                        " es va fer la " + resp[x]['movimientoid'].tipo +
+                                        " del producte: " + resp[x].nombre + "</p></td></tr>");
+                                    }
+                                    if(resp[x]['movimientoid'].id == 2 || resp[x]['movimientoid'].id == 3) {
+                                        if (resp[x]['movimientoid'].id == 2) {
+
+                                            table.append("<tr><td><p>El dia " + fechaJS[0] + " a les " + horaJS[0] +
+                                            ":" + horaJS[1] +
+                                            " es va " + resp[x]['movimientoid'].tipo +
+                                            " el producte: " + resp[x].nombre + "</p></td></tr>");
+                                        }
+                                        if (resp[x]['movimientoid'].id == 3){
+                                            table.append("<tr><td><p>El dia " + fechaJS[0] + " a les " + horaJS[0] +
+                                            ":" + horaJS[1] +
+                                            " es va " + resp[x]['movimientoid'].tipo +
+                                            " el producte: " + resp[x].nombre + "</p></td></tr>");
+                                        }
+                                    }
+                                }
+                            }
+                        });
+                    });
+                </script>
+            </div>
+    </div>
+{% endblock %}
