@@ -1,0 +1,198 @@
+<?php
+namespace AppBundle\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Security\Core\User\UserInterface;
+
+/**
+ * @ORM\Table(name="vehiculo")
+ * @ORM\Entity(repositoryClass="AppBundle\Entity\VehiculoRepository")
+ */
+class Vehiculo {
+
+    /**
+     * @ORM\Id
+     * @ORM\Column(type="integer")
+     * @ORM\GeneratedValue
+     */
+    protected $id;
+
+    /** @ORM\Column(type="string", length=100) */
+    protected $matricula;
+
+    /** @ORM\Column(type="string", length=100) */
+    protected $marca;
+
+    /** @ORM\Column(type="string", length=100) */
+    protected $modelo;
+
+    /** @ORM\Column(type="date", length=100) */
+    protected $fechaalta;
+
+    /** @ORM\Column(type="date", length=100) */
+    protected $fechamodificacion;
+
+    /** @ORM\Column(type="string", length=100) */
+    protected $bastidor;
+
+
+
+
+    /**
+     * Get id
+     *
+     * @return integer 
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * Set matricula
+     *
+     * @param string $matricula
+     * @return Vehiculo
+     */
+    public function setMatricula($matricula)
+    {
+        $this->matricula = $matricula;
+
+        return $this;
+    }
+
+    /**
+     * Get matricula
+     *
+     * @return string 
+     */
+    public function getMatricula()
+    {
+        return $this->matricula;
+    }
+
+    /**
+     * Set modelo
+     *
+     * @param string $modelo
+     * @return Vehiculo
+     */
+    public function setModelo($modelo)
+    {
+        $this->modelo = $modelo;
+
+        return $this;
+    }
+
+    /**
+     * Get modelo
+     *
+     * @return string 
+     */
+    public function getModelo()
+    {
+        return $this->modelo;
+    }
+
+    /**
+     * Set fechaalta
+     *
+     * @param \DateTime $fechaalta
+     * @return Vehiculo
+     */
+    public function setFechaalta($fechaalta)
+    {
+        $this->fechaalta = $fechaalta;
+
+        return $this;
+    }
+
+    /**
+     * Get fechaalta
+     *
+     * @return \DateTime 
+     */
+    public function getFechaalta()
+    {
+        return $this->fechaalta;
+    }
+
+    /**
+     * Set fechamodificacion
+     *
+     * @param \DateTime $fechamodificacion
+     * @return Vehiculo
+     */
+    public function setFechamodificacion($fechamodificacion)
+    {
+        $this->fechamodificacion = $fechamodificacion;
+
+        return $this;
+    }
+
+    /**
+     * Get fechamodificacion
+     *
+     * @return \DateTime 
+     */
+    public function getFechamodificacion()
+    {
+        return $this->fechamodificacion;
+    }
+
+    /**
+     * (Add this method into your class)
+     *
+     * @return string String representation of this class
+     */
+    public function __toString()
+    {
+        return $this->matricula;
+    }
+
+    /**
+     * Set marca
+     *
+     * @param string $marca
+     * @return Vehiculo
+     */
+    public function setMarca($marca)
+    {
+        $this->marca = $marca;
+
+        return $this;
+    }
+
+    /**
+     * Get marca
+     *
+     * @return string
+     */
+    public function getMarca()
+    {
+        return $this->marca;
+    }
+
+    /**
+     * Set bastidor
+     *
+     * @param string $bastidor
+     * @return Vehiculo
+     */
+    public function setBastidor($bastidor)
+    {
+        $this->bastidor = $bastidor;
+
+        return $this;
+    }
+
+    /**
+     * Get bastidor
+     *
+     * @return string
+     */
+    public function getBastidor()
+    {
+        return $this->bastidor;
+    }
+}

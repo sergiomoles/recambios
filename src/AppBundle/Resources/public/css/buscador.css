@@ -1,0 +1,39 @@
+body{
+
+}
+
+.buscaProducte{
+    height: 490px;
+    margin: 40px;
+    padding: 40px;
+    border: 1px solid #66AFE9;
+    -webkit-border-radius: 15px 15px 15px 15px;
+    border-radius: 15px 15px 15px 15px;
+}
+
+.producteCaixa{
+    width: 70%;
+    padding: 40px;
+    margin: 40px;
+    border: 1px solid #66AFE9;
+    -webkit-border-radius: 15px 15px 15px 15px;
+    border-radius: 15px 15px 15px 15px;
+}
+
+.vehicleCaixa{
+    width: 70%;
+    padding: 40px;
+    margin: 40px;
+    border: 1px solid #66AFE9;
+    -webkit-border-radius: 15px 15px 15px 15px;
+    border-radius: 15px 15px 15px 15px;
+}
+
+.buscaVehicle{
+    height: 490px;
+    margin: 40px;
+    padding: 40px;
+    border: 1px solid #66AFE9;
+    -webkit-border-radius: 15px 15px 15px 15px;
+    border-radius: 15px 15px 15px 15px;
+}

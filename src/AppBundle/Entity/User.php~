@@ -175,4 +175,5 @@ $this->password,
     {
         return $this->isActive;
     }
+
 }
